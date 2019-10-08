@@ -6,6 +6,13 @@ import javax.servlet.http.HttpServletResponse;
 
 public class ResortServlet extends javax.servlet.http.HttpServlet {
 
+   // format1: /resorts
+   // format2: /resorts/{resortID}/seasons
+
+  private static final int FORMAT2_LENGTH = 3;
+  private static final String FORMAT2 = "seasons";
+
+
   protected void doPost(javax.servlet.http.HttpServletRequest request,
       javax.servlet.http.HttpServletResponse response)
       throws javax.servlet.ServletException, IOException {
@@ -15,7 +22,7 @@ public class ResortServlet extends javax.servlet.http.HttpServlet {
     response.setCharacterEncoding("UTF-8");
     String urlPath = request.getPathInfo();
 
-    if (urlPath == null || urlPath.length() == 0) {
+    if (urlPath == null) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       String jsonString = new Gson().toJson("INVALID URL");
       out.write(jsonString);
@@ -24,7 +31,7 @@ public class ResortServlet extends javax.servlet.http.HttpServlet {
 
     String[] urlParts = urlPath.split("/");
 
-    if (!isUrlValid(urlParts)) {
+    if (!isUrlValidForFormat2(urlParts)) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       String jsonString = new Gson().toJson("INVALID URL");
       out.write(jsonString);
@@ -33,7 +40,7 @@ public class ResortServlet extends javax.servlet.http.HttpServlet {
 
       BufferedReader buf = request.getReader();
 
-      out.write(new Gson().toJson("POST SUCCESSFULLY!"));
+      out.write(new Gson().toJson("200"));
     }
 
   }
@@ -47,29 +54,46 @@ public class ResortServlet extends javax.servlet.http.HttpServlet {
     response.setCharacterEncoding("UTF-8");
     String urlPath = request.getPathInfo();
 
-    if (urlPath == null || urlPath.length() == 0) {
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-      String jsonString = new Gson().toJson("INVALID URL");
+    if (urlPath == null) {
+      response.setStatus(HttpServletResponse.SC_OK);
+      String jsonString = new Gson().toJson("200");
       out.write(jsonString);
       return;
     }
 
-    String[] urlParts = urlPath.split("/");
-    // and now validate url path and return the response status code
-    // (and maybe also some value if input is valid)
+    String[] urlPaths = urlPath.split("/");
 
-    if (!isUrlValid(urlParts)) {
+    if (!isUrlValidForFormat1(urlPaths) && !isUrlValidForFormat2(urlPaths)) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
       String jsonString = new Gson().toJson("INVALID URL");
       out.write(jsonString);
     } else {
       response.setStatus(HttpServletResponse.SC_OK);
-      String jsonString = new Gson().toJson("GET SUCCESSFULLY");
+      String jsonString = new Gson().toJson("200");
       out.write(jsonString);
     }
   }
 
-  private boolean isUrlValid(String[] urlPath) {
+  private boolean isUrlValidForFormat1(String[] urlPaths) {
+    return urlPaths.length == 0;
+  }
+
+  private boolean isUrlValidForFormat2(String[] urlPaths) {
+
+    if (urlPaths.length != FORMAT2_LENGTH) {
+      return false;
+    }
+
+    try {
+      Integer.parseInt(urlPaths[1]);
+    } catch (NumberFormatException e) {
+      return false;
+    }
+
+    if (!urlPaths[2].equals(FORMAT2)) {
+      return false;
+    }
+
     return true;
   }
 
