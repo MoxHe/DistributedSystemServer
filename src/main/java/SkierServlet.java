@@ -86,7 +86,7 @@ public class SkierServlet extends javax.servlet.http.HttpServlet {
 
     } else {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-      String jsonString = new Gson().toJson(urlParts.length);
+      String jsonString = new Gson().toJson("INVALID URL");
       out.write(jsonString);
       return;
     }
