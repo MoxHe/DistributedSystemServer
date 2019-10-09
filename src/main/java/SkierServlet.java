@@ -74,15 +74,23 @@ public class SkierServlet extends javax.servlet.http.HttpServlet {
 
     String[] urlParts = urlPath.split("/");
 
-    if (!isUrlValidForFormat1(urlParts) && !isUrlValidForFormat2(urlParts)) {
-      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-      String jsonString = new Gson().toJson("INVALID URL");
-      out.write(jsonString);
-    } else {
+    if (isUrlValidForFormat1(urlParts)) {
       response.setStatus(HttpServletResponse.SC_OK);
-      String jsonString = new Gson().toJson(200);
+      String jsonString = new Gson().toJson(1);
       out.write(jsonString);
+
+    } else if (isUrlValidForFormat2(urlParts)) {
+      response.setStatus(HttpServletResponse.SC_OK);
+      String jsonString = new Gson().toJson(2);
+      out.write(jsonString);
+
+    } else {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      String jsonString = new Gson().toJson(urlParts.length);
+      out.write(jsonString);
+      return;
     }
+
   }
 
   private boolean isUrlValidForFormat1(String[] urlPaths) {
@@ -121,7 +129,6 @@ public class SkierServlet extends javax.servlet.http.HttpServlet {
     if (urlPaths.length != FORMAT2_LENGTH) {
       return false;
     }
-
     try {
       Integer.parseInt(urlPaths[1]);
     } catch (NumberFormatException e) {
