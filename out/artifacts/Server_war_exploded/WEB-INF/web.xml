@@ -5,7 +5,7 @@
          version="4.0">
   <servlet>
     <servlet-name>SkierServlet</servlet-name>
-    <servlet-class>SkierServlet</servlet-class>
+    <servlet-class>servlet.SkierServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -16,12 +16,22 @@
 
   <servlet>
     <servlet-name>ResortServlet</servlet-name>
-    <servlet-class>ResortServlet</servlet-class>
+    <servlet-class>servlet.ResortServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
     <servlet-name>ResortServlet</servlet-name>
     <url-pattern>/resorts/*</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>Statistics</servlet-name>
+    <servlet-class>servlet.StatisticsServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>Statistics</servlet-name>
+    <url-pattern>/statistics/*</url-pattern>
   </servlet-mapping>
 
 
