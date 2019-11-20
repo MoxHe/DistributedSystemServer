@@ -1,13 +1,14 @@
 package db;
 import java.sql.*;
+import javax.sql.DataSource;
 
 public class LiftRideDao {
   private Connection conn;
   private PreparedStatement ps;
 
-  public LiftRideDao() {
+  public LiftRideDao(DataSource pool) {
     try {
-      conn = DBCPDataSource.getConnection();
+      conn = pool.getConnection();
       ps = null;
     } catch (Exception e) {
       e.printStackTrace();
@@ -143,10 +144,4 @@ public class LiftRideDao {
       e.printStackTrace();
     }
   }
-
-  public static void main(String[] args) {
-    LiftRideDao liftRideDao = new LiftRideDao();
-    liftRideDao.createLiftRides();
-  }
-
 }

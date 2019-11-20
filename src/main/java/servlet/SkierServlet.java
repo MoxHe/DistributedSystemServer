@@ -1,5 +1,7 @@
 package servlet;
 
+import db.DBCPDataSource;
+import javax.sql.DataSource;
 import util.StatisticsCache;
 import util.StatisticsCache;
 
@@ -31,8 +33,7 @@ public class SkierServlet extends javax.servlet.http.HttpServlet {
 
   private static final int VERTICAL_FACTOR = 10;
 
-
-
+  private static DataSource pool = DBCPDataSource.createPool();
   protected void doPost(javax.servlet.http.HttpServletRequest request,
       javax.servlet.http.HttpServletResponse response)
       throws javax.servlet.ServletException, IOException {
@@ -78,7 +79,7 @@ public class SkierServlet extends javax.servlet.http.HttpServlet {
       String time = parsedBody[1];
       int vertical = VERTICAL_FACTOR * liftID;
 
-      LiftRideDao liftRideDao = new LiftRideDao();
+      LiftRideDao liftRideDao = new LiftRideDao(pool);
       liftRideDao.insertIntoLiftRides(resortID, seasonID, dayID, skierID, liftID, time, vertical);
       liftRideDao.updateTotalVertical(resortID, seasonID, dayID, skierID, vertical);
       liftRideDao.closeConnection();
@@ -125,7 +126,7 @@ public class SkierServlet extends javax.servlet.http.HttpServlet {
       String dayID = urlParts[5];
       int skierID = Integer.parseInt(urlParts[7]);
 
-      LiftRideDao liftRideDao = new LiftRideDao();
+      LiftRideDao liftRideDao = new LiftRideDao(pool);
       int totalVertical = liftRideDao.getTotalVertical(resortID, seasonID, dayID, skierID);
       liftRideDao.closeConnection();
 
